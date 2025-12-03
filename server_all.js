@@ -24,7 +24,7 @@ let model = null;
 let ready = false;
 let inputName = null;
 let outputName = null;
-let inputDim = null;
+let inputDim = null; 
 
 const modelDir = path.resolve(__dirname, "model");
 app.use('/model', express.static(modelDir));

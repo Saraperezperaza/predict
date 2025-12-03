@@ -109,7 +109,7 @@ dist
 **/.vitepress/cache
 
 # Docusaurus cache and generated files
-.docusaurus
+.docusaurus 
 
 # Serverless directories
 .serverless/

@@ -25,7 +25,7 @@ app.use("/", predictRoutes);
 app.listen(PORT, async () => {
   const serverUrl = `http://localhost:${PORT}`;
   console.log(`[PREDICT] Servicio escuchando en ${serverUrl}`);
-
+ 
   try {
     await mongoose.connect(MONGO_URI);
     console.log("[PREDICT] Conexión a la base de datos establecida");

@@ -18,3 +18,4 @@ EXPOSE 3002
 
 # Comando de arranque
 CMD ["node", "server.js"]
+ 
