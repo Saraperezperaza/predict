@@ -1,5 +1,6 @@
 // controllers/predictController.js
 const { getModelInfo, predict } = require("../services/tfModelService");
+const Prediction = require("../models/prediction");
 
 function health(req, res) {
   res.json({
@@ -46,29 +47,42 @@ async function doPredict(req, res) {
       return res.status(400).json({ error: "Missing meta object" });
     }
 
-    const { featureCount } = meta;
+    const { featureCount, dataId, source, correlationId } = meta;
 
     if (featureCount !== info.inputDim) {
       return res.status(400).json({
+        // 👇 aquí deben ir backticks `
         error: `featureCount must be ${info.inputDim}, received ${featureCount}`
       });
     }
 
     if (!Array.isArray(features) || features.length !== info.inputDim) {
       return res.status(400).json({
+        // 👇 aquí también
         error: `features must be an array of ${info.inputDim} numbers`
       });
     }
 
+    // 1) Inferencia con el modelo
     const prediction = await predict(features);
     const latencyMs = Date.now() - start;
-    const timestamp = new Date().toISOString();
+    const ts = new Date();
 
-    // De momento sin MongoDB → predictionId null
-    res.status(201).json({
-      predictionId: null,
+    // 2) Guardar en MongoDB
+    const doc = await Prediction.create({
+      dataId: dataId || null,
       prediction,
-      timestamp,
+      latencyMs,
+      source,
+      correlationId,
+      createdAt: ts
+    });
+
+    // 3) Responder ya con persistencia
+    res.status(201).json({
+      predictionId: doc._id.toString(),
+      prediction,
+      ts: ts.toISOString(),
       latencyMs
     });
   } catch (err) {
