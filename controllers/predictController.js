@@ -51,14 +51,12 @@ async function doPredict(req, res) {
 
     if (featureCount !== info.inputDim) {
       return res.status(400).json({
-        // 👇 aquí deben ir backticks `
         error: `featureCount must be ${info.inputDim}, received ${featureCount}`
       });
     }
 
     if (!Array.isArray(features) || features.length !== info.inputDim) {
       return res.status(400).json({
-        // 👇 aquí también
         error: `features must be an array of ${info.inputDim} numbers`
       });
     }
